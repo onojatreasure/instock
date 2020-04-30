@@ -2,20 +2,33 @@
 
 namespace Tests\Feature;
 
+use App\Product;
+use App\Retailer;
+use App\Stock;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
-    /**
-     * A basic test example.
-     *
-     * @return void
-     */
-    public function testBasicTest()
+    use RefreshDatabase;
+    /** @test */
+    public function it_checks_stock_for_products_at_retailers()
     {
-        $response = $this->get('/');
+        $switch = Product::create(['name' => 'Nintendo Switch']);
 
-        $response->assertStatus(200);
+        $bestBuy = Retailer::create(['name' => 'Best Buy']);
+
+        $this->assertFalse($switch->inStock());
+
+        $stock = new Stock([
+            'price' => 10000,
+            'url' => 'http://foo.com',
+            'sku' => '12345',
+            'in_stock' => true
+        ]);
+
+        $bestBuy->addStock($switch, $stock);
+
+        $this->assertTrue($switch->inStock());
     }
 }
