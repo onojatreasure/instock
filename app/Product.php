@@ -2,8 +2,16 @@
 
 namespace App;
 
+use App\Stock;
+
 class Product extends Model
 {
+    
+    public function track()
+    {
+        $this->stock->each->track();
+    }
+
     public function inStock()
     {
         return $this->stock()->where('in_stock', true)->exists();
@@ -13,4 +21,5 @@ class Product extends Model
     {
         return $this->hasMany(Stock::class);
     }
+
 }
