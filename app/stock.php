@@ -2,10 +2,9 @@
 
 namespace App;
 
-use Illuminate\Support\Facades\Http;
 use Illuminate\Database\Eloquent\Model;
 
-class stock extends Model
+class Stock extends Model
 {
     protected $table = 'stock';
 
@@ -13,22 +12,20 @@ class stock extends Model
         'in_stock' => 'boolean'
     ];
 
-    
     public function track()
     {
-        if ($this->retailer->name === 'Best Buy') {
-            $results = Http::get('http://foo.test')->json();
+        $status = $this->retailer
+            ->client()
+            ->checkAvailability($this);
 
-            $this->update([
-                'in_stock' => $results['available'],
-                'price' => $results['price']
-            ]);
-        }
+        $this->update([
+            'in_stock' => $status->available,
+            'price' => $status->price
+        ]);
     }
 
     public function retailer()
     {
         return $this->belongsTo(Retailer::class);
     }
-    
 }

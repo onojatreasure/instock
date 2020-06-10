@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Stock;
+use App\Clients\BestBuy;
 
 class Product extends Model
 {
